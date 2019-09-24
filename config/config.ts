@@ -3,10 +3,9 @@ import defaultSettings from './defaultSettings'; // https://umijs.org/config/
 
 import slash from 'slash2';
 import webpackPlugin from './plugin.config';
-const { pwa, primaryColor } = defaultSettings;
-
-// preview.pro.ant.design only do not use in your production ;
+const { pwa, primaryColor } = defaultSettings; // preview.pro.ant.design only do not use in your production ;
 // preview.pro.ant.design 专用环境变量，请不要在你的项目中使用它。
+
 const { ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION } = process.env;
 const isAntDesignProPreview = ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION === 'site';
 const plugins: IPlugin[] = [
@@ -25,7 +24,6 @@ const plugins: IPlugin[] = [
         // default true, when it is true, will use `navigator.language` overwrite default
         baseNavigator: true,
       },
-
       // 动态导入
       // dynamicImport: {
       //   loadingComponent: './components/PageLoading/index',
@@ -39,8 +37,7 @@ const plugins: IPlugin[] = [
               importWorkboxFrom: 'local',
             },
           }
-        : false,
-      // default close dll, because issue https://github.com/ant-design/ant-design-pro/issues/4665
+        : false, // default close dll, because issue https://github.com/ant-design/ant-design-pro/issues/4665
       // dll features https://webpack.js.org/plugins/dll-plugin/
       // dll: {
       //   include: ['dva', 'dva/router', 'dva/saga', 'dva/fetch'],
@@ -49,12 +46,16 @@ const plugins: IPlugin[] = [
     },
   ],
   [
+    // 添加区块的插件
     'umi-plugin-pro-block',
     {
       moveMock: false,
+      //是否移动区块的mock文件到Mock文件下，默认为true
       moveService: false,
+      //是否移动区块的service到Service下统一管理，默认为true（发送请求用的）
       modifyRequest: true,
-      autoAddMenu: true,
+      //// whether modify umi-request to util(s)/request (if it exist), default to true
+      autoAddMenu: true, // 是否自动添加到路由，设置为false，需要手动添加
     },
   ],
 ]; // 针对 preview.pro.ant.design 的 GA 统计代码
@@ -89,48 +90,241 @@ export default {
   // umi routes: https://umijs.org/zh/guide/router.html
   routes: [
     {
-      path: '/user',
-      component: '../layouts/UserLayout',
-      routes: [
-        {
-          name: 'login',
-          path: '/user/login',
-          component: './user/login',
-        },
-      ],
-    },
-    {
       path: '/',
-      component: '../layouts/SecurityLayout',
+      component: '../layouts/BlankLayout',
       routes: [
         {
-          path: '/',
-          component: '../layouts/BasicLayout',
-          authority: ['admin', 'user'],
+          path: '/user',
+          component: '../layouts/UserLayout',
           routes: [
             {
-              path: '/',
-              redirect: '/welcome',
+              path: '/user',
+              redirect: '/user/login',
             },
             {
-              path: '/welcome',
-              name: 'welcome',
-              icon: 'smile',
-              component: './Welcome',
+              name: 'login',
+              path: '/user/login',
+              component: './user/login',
             },
             {
-              component: './404',
+              name: 'register-result',
+              path: '/user/register-result',
+              component: './user/register-result',
+            },
+            {
+              name: 'register',
+              path: '/user/register',
+              component: './user/register',
+            },
+            {
+              component: '404',
             },
           ],
         },
         {
-          component: './404',
+          path: '/',
+          component: '../layouts/BasicLayout',
+          Routes: ['src/pages/Authorized'],
+          authority: ['admin', 'user'],
+          routes: [
+            {
+              path: '/dashboard',
+              name: 'dashboard',
+              icon: 'dashboard',
+              routes: [
+                {
+                  name: 'analysis',
+                  path: '/dashboard/analysis',
+                  component: './dashboard/analysis',
+                },
+                {
+                  name: 'monitor',
+                  path: '/dashboard/monitor',
+                  component: './dashboard/monitor',
+                },
+                {
+                  name: 'workplace',
+                  path: '/dashboard/workplace',
+                  component: './dashboard/workplace',
+                },
+              ],
+            },
+            {
+              path: '/form',
+              icon: 'form',
+              name: 'form',
+              routes: [
+                {
+                  name: 'basic-form',
+                  path: '/form/basic-form',
+                  component: './form/basic-form',
+                },
+                {
+                  name: 'step-form',
+                  path: '/form/step-form',
+                  component: './form/step-form',
+                },
+                {
+                  name: 'advanced-form',
+                  path: '/form/advanced-form',
+                  component: './form/advanced-form',
+                },
+              ],
+            },
+            {
+              path: '/list',
+              icon: 'table',
+              name: 'list',
+              routes: [
+                {
+                  path: '/list/search',
+                  name: 'search-list',
+                  component: './list/search',
+                  routes: [
+                    {
+                      path: '/list/search',
+                      redirect: '/list/search/articles',
+                    },
+                    {
+                      name: 'articles',
+                      path: '/list/search/articles',
+                      component: './list/search/articles',
+                    },
+                    {
+                      name: 'projects',
+                      path: '/list/search/projects',
+                      component: './list/search/projects',
+                    },
+                    {
+                      name: 'applications',
+                      path: '/list/search/applications',
+                      component: './list/search/applications',
+                    },
+                  ],
+                },
+                {
+                  name: 'table-list',
+                  path: '/list/table-list',
+                  component: './list/table-list',
+                },
+                {
+                  name: 'basic-list',
+                  path: '/list/basic-list',
+                  component: './list/basic-list',
+                },
+                {
+                  name: 'card-list',
+                  path: '/list/card-list',
+                  component: './list/card-list',
+                },
+              ],
+            },
+            {
+              path: '/profile',
+              name: 'profile',
+              icon: 'profile',
+              routes: [
+                {
+                  name: 'basic',
+                  path: '/profile/basic',
+                  component: './profile/basic',
+                },
+                {
+                  name: 'advanced',
+                  path: '/profile/advanced',
+                  component: './profile/advanced',
+                },
+              ],
+            },
+            {
+              name: 'result',
+              icon: 'check-circle-o',
+              path: '/result',
+              routes: [
+                {
+                  name: 'success',
+                  path: '/result/success',
+                  component: './result/success',
+                },
+                {
+                  name: 'fail',
+                  path: '/result/fail',
+                  component: './result/fail',
+                },
+              ],
+            },
+            {
+              name: 'exception',
+              icon: 'warning',
+              path: '/exception',
+              routes: [
+                {
+                  name: '403',
+                  path: '/exception/403',
+                  component: './exception/403',
+                },
+                {
+                  name: '404',
+                  path: '/exception/404',
+                  component: './exception/404',
+                },
+                {
+                  name: '500',
+                  path: '/exception/500',
+                  component: './exception/500',
+                },
+              ],
+            },
+            {
+              name: 'account',
+              icon: 'user',
+              path: '/account',
+              routes: [
+                {
+                  name: 'center',
+                  path: '/account/center',
+                  component: './account/center',
+                },
+                {
+                  name: 'settings',
+                  path: '/account/settings',
+                  component: './account/settings',
+                },
+              ],
+            },
+            {
+              name: 'editor',
+              icon: 'highlight',
+              path: '/editor',
+              routes: [
+                {
+                  name: 'flow',
+                  path: '/editor/flow',
+                  component: './editor/flow',
+                },
+                {
+                  name: 'mind',
+                  path: '/editor/mind',
+                  component: './editor/mind',
+                },
+                {
+                  name: 'koni',
+                  path: '/editor/koni',
+                  component: './editor/koni',
+                },
+              ],
+            },
+            {
+              path: '/',
+              redirect: '/dashboard/analysis',
+              authority: ['admin', 'user'],
+            },
+            {
+              component: '404',
+            },
+          ],
         },
       ],
-    },
-
-    {
-      component: './404',
     },
   ],
   // Theme for antd: https://ant.design/docs/react/customize-theme-cn
@@ -153,7 +347,7 @@ export default {
         resourcePath: string;
       },
       _: string,
-      localName: string,
+      localName: string
     ) => {
       if (
         context.resourcePath.includes('node_modules') ||
@@ -180,14 +374,12 @@ export default {
   manifest: {
     basePath: '/',
   },
-  chainWebpack: webpackPlugin,
-  /*
-  proxy: {
-    '/server/api/': {
-      target: 'https://preview.pro.ant.design/',
-      changeOrigin: true,
-      pathRewrite: { '^/server': '' },
-    },
-  },
-  */
+  chainWebpack: webpackPlugin, // proxy: {
+  //   '/api': {
+  //     // target: 'https://preview.pro.ant.design/',
+  //     target: 'http://139.159.248.18',
+  //     changeOrigin: true,
+  //     pathRewrite: { '': '' },
+  //   },
+  // },
 } as IConfig;

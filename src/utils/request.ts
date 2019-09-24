@@ -28,6 +28,7 @@ const codeMessage = {
  */
 const errorHandler = (error: { response: Response }): Response => {
   const { response } = error;
+
   if (response && response.status) {
     const errorText = codeMessage[response.status] || response.statusText;
     const { status, url } = response;
@@ -50,7 +51,12 @@ const errorHandler = (error: { response: Response }): Response => {
  */
 const request = extend({
   errorHandler, // 默认错误处理
-  credentials: 'include', // 默认请求是否带上cookie
+  // credentials: 'include', // 默认请求是否带上cookie
+  credentials: 'same-origin',
+  // timeout: 6000,
+  // headers: {
+  //   'Content-Type': 'application/x-www-form-urlencoded',
+  // },
 });
 
 export default request;
