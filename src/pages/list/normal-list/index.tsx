@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { FormComponentProps } from 'antd/es/form';
 import { Dispatch } from 'redux';
 import { Table, Divider, Tag, Card } from 'antd';
+import { StateType } from './model';
+import { connect } from 'dva';
 
 interface TableFormDateType {
   key: string;
@@ -14,10 +16,14 @@ interface TableFormDateType {
 
 interface NormalListProps extends FormComponentProps {
   dispatch: Dispatch<any>;
+  normalList: StateType;
 }
 
 interface NormalListState {}
 
+@connect((normalList: { normalList: StateType }) => {
+  normalList;
+})
 class NormalList extends Component<NormalListProps, NormalListState> {
   columns = [
     {
@@ -91,7 +97,16 @@ class NormalList extends Component<NormalListProps, NormalListState> {
       tags: ['cool', 'teacher'],
     },
   ];
+
+  componentDidMount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'normalList/fetch',
+    });
+  }
   render() {
+    const { normalList } = this.props;
+    console.log(normalList);
     return (
       <div>
         <Card>

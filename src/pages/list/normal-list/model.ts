@@ -1,8 +1,10 @@
 import { AnyAction, Reducer } from 'redux';
 import { EffectsCommandMap } from 'dva';
+import { NormalListData } from './data.d';
+import { getNormalList } from './service';
 
 export interface StateType {
-  data;
+  data: NormalListData;
 }
 
 export type Effect = (
@@ -20,3 +22,32 @@ export interface ModelType {
     save: Reducer<StateType>;
   };
 }
+
+const Model: ModelType = {
+  namespace: 'normalList',
+  state: {
+    data: {
+      list: [],
+    },
+  },
+
+  effects: {
+    *fetch({}, { call, put }) {
+      const response = yield call(getNormalList);
+      yield put({
+        type: 'save',
+        payload: response,
+      });
+    },
+  },
+
+  reducers: {
+    save(state, action) {
+      return {
+        ...state,
+        data: action.payload,
+      };
+    },
+  },
+};
+export default Model;
