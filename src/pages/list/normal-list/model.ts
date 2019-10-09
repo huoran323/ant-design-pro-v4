@@ -1,6 +1,6 @@
 import { AnyAction, Reducer } from 'redux';
 import { EffectsCommandMap } from 'dva';
-import { NormalListData } from './data.d';
+import { NormalListItem, NormalListData } from './data.d';
 import { getNormalList } from './service';
 
 export interface StateType {

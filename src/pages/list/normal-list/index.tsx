@@ -16,16 +16,32 @@ interface TableFormDateType {
 
 interface NormalListProps extends FormComponentProps {
   dispatch: Dispatch<any>;
-  normalList: StateType;
+  listData: StateType;
 }
 
 interface NormalListState {}
 
-@connect((normalList: { normalList: StateType }) => {
-  normalList;
+// @connect(({ normalList }: { normalList: StateType }) => ({
+
+//   listData: normalList,
+// }))
+@connect(({ normalList }: { normalList: StateType }) => {
+  return {
+    listData: normalList,
+  };
 })
 class NormalList extends Component<NormalListProps, NormalListState> {
   columns = [
+    {
+      title: 'Key',
+      dataIndex: 'key',
+    },
+    {
+      title: 'Name',
+      dataIndex: 'name',
+    },
+  ];
+  columns1 = [
     {
       title: 'Name',
       dataIndex: 'name',
@@ -74,7 +90,7 @@ class NormalList extends Component<NormalListProps, NormalListState> {
       ),
     },
   ];
-  data = [
+  data1 = [
     {
       key: '1',
       name: 'John Brown',
@@ -100,17 +116,23 @@ class NormalList extends Component<NormalListProps, NormalListState> {
 
   componentDidMount() {
     const { dispatch } = this.props;
+
     dispatch({
       type: 'normalList/fetch',
     });
   }
   render() {
-    const { normalList } = this.props;
-    console.log(normalList);
+    console.log('this.props --', this.props);
+    const {
+      listData: { data },
+    } = this.props;
+    console.log(data.list);
+    const { list } = data;
+
     return (
       <div>
         <Card>
-          <Table columns={this.columns} dataSource={this.data} />
+          <Table columns={this.columns} dataSource={list} />
         </Card>
       </div>
     );
